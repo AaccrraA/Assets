@@ -41,14 +41,6 @@ var oScoreDigits : Texture2D[]; //текстуры для O
 // Turn Labels
 var xTurnImage : Texture2D[];
 var oTurnImage : Texture2D[];
-private var xTurnImageOffset_x : int;
-private var xTurnImageOffset_y : int;
-private var oTurnImageOffset_x : int;
-private var oTurnImageOffset_y : int;
-xTurnImageOffset_x = 10;
-xTurnImageOffset_y = 68;
-oTurnImageOffset_x = 545;
-oTurnImageOffset_y = 68;
 
 //////////
 //GAMEPLAY
@@ -83,13 +75,13 @@ function OnGUI() {
 
 function DrawGamePanel() {
 	// Position
-	var x : int;
-	var y : int;
-	x = Screen.width/2 - gamePanelBackground.width/2;
-	y = 0;
+	var X : int;
+	var Y : int;
+	X = Screen.width/2 - gamePanelBackground.width/2;
+	Y = 0;
 	
 	// Background
-	GUI.Label(Rect(x, y, gamePanelBackground.width, gamePanelBackground.height), gamePanelBackground);
+	GUI.Label(Rect(X, Y, gamePanelBackground.width, gamePanelBackground.height), gamePanelBackground);
 	
 	//Score
 	var xScoreOffset_x : int;
@@ -103,7 +95,26 @@ function DrawGamePanel() {
 	var lDigit : int;
 	var rDigit : int;
 	
-	//Turn
+	//Turn Indicators
+	var xTurnImageOffset_x : int;
+	var xTurnImageOffset_y : int;
+	var oTurnImageOffset_x : int;
+	var oTurnImageOffset_y : int;
+	xTurnImageOffset_x = 20;
+	xTurnImageOffset_y = 24;
+	oTurnImageOffset_x = 510;
+	oTurnImageOffset_y = 24;
+	
+	if (turn == -1) {
+		GUI.Label(Rect(X+xTurnImageOffset_x, Y+xTurnImageOffset_y, xTurnImage[0].width, xTurnImage[0].height), xTurnImage[1]);
+		GUI.Label(Rect(X+oTurnImageOffset_x, Y+oTurnImageOffset_y, oTurnImage[0].width, oTurnImage[0].height), oTurnImage[0]);
+	}
+	else if (turn == 1){
+		GUI.Label(Rect(X+oTurnImageOffset_x, Y+oTurnImageOffset_y, oTurnImage[0].width, oTurnImage[0].height), oTurnImage[1]);
+		GUI.Label(Rect(X+xTurnImageOffset_x, Y+xTurnImageOffset_y, xTurnImage[0].width, xTurnImage[0].height), xTurnImage[0]);
+	}
+	
+	// Score
 }
 
 function DrawBoard() {
@@ -113,7 +124,7 @@ function DrawBoard() {
 	x = Screen.width/2 - (boardSize*boardButtonWidth)/2;
 	y = gamePanelBackground.height;
 	
-	// Buttons
+	// Field Buttons
 	for (var i = 0; i < boardSize; i++) {
 		for (var j = 0; j < boardSize; j++) {
 			if (GUI.Button(Rect(x+j*boardButtons[0].width, y+i*boardButtons[0].height, boardButtons[0].width, boardButtons[0].height), boardButtons[boardState[i][j] + 1])) {
