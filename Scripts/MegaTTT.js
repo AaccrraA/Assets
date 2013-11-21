@@ -2,6 +2,8 @@
 //GUI SKIN
 var myGUISkin : GUISkin; // skin без оформления(невидимый)
 
+public var myAi : AI = null;
+
 ////////////
 //BACKGROUND
 var backGround : Texture2D;
@@ -44,16 +46,9 @@ var oTurnImage : Texture2D[];
 
 //////////
 //GAMEPLAY
+// Other Variables
 private var turn : int; // -1 -> X; 1 -> O;
 turn = -1;
-private var boardState = new Array(boardSize);
-for (var i = 0; i < boardSize; i++) {
-	boardState[i] = new Array(boardSize);
-	for (var j = 0; j < boardSize; j++) {
-		boardState[i][j] = 0;
-		//print("["+i+"]["+j+"] = "+boardState[i][j]);
-	}
-}
 private var winner : int;
 private var tie : boolean;
 private var scoreSums : int[];
@@ -63,7 +58,22 @@ scoreSums = new int[8]; // 8 выигрышных комбинаций
 for (score in scoreSums) {
 	score = 0;
 }
-
+// BoardState
+private var boardState = new Array(boardSize);
+for (var i = 0; i < boardSize; i++) {
+	boardState[i] = new Array(boardSize);
+	for (var j = 0; j < boardSize; j++) {
+		boardState[i][j] = 0;
+	}
+}
+// BoardWeight
+private var boardWeight = new Array(boardSize);
+for (var i = 0; i < boardSize; i++) {
+	boardWeight[i] = new Array(boardSize);
+	for (var j = 0; j < boardSize; j++) {
+		boardWeight[i][j] = 0;
+	}
+}
 /////////
 //MAIN UI
 function OnGUI() {
@@ -145,6 +155,11 @@ function ResetBoard() {
 	for (var i = 0; i < boardSize; i++) {
 		for (var j = 0; j < boardSize; j++) {
 			boardState[i][j] = 0;
+		}
+	}
+	for (var i = 0; i < boardSize; i++) {
+		for (var j = 0; j < boardSize; j++) {
+			boardWeight[i][j] = 0;
 		}
 	}
 }
