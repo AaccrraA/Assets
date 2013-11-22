@@ -1,15 +1,18 @@
 ﻿//////////
 //GUI SKIN
+//////////
 var myGUISkin : GUISkin; // skin без оформления(невидимый)
 
 ////////////
 //BACKGROUND
+////////////
 var backGround : Texture2D;
 private var Screen_width = Screen.width;
 private var Screen_height = Screen.height;
 
 ///////
 //BOARD
+///////
 // Board Size
 var boardSize : int;
 if (Screen.width > Screen.height - gamePanelBackground.height) {
@@ -20,13 +23,13 @@ else {
 }
 // Button Lables
 var boardButtons : Texture2D[]; // массив трех текстур кнопки
-private var boardButtonWidth : int;
-private var boardButtonHeight : int;
-boardButtonWidth = boardButtons[0].width;
-boardButtonHeight = boardButtons[0].height;
 
-/////////////
+// Board
+var board : Board = new Board(boardSize);
+
+////////////
 //GAME PANEL
+////////////
 var gamePanelBackground : Texture2D;
 // Score Table
 private var scoreTable : int[];
@@ -44,6 +47,7 @@ var oTurnImage : Texture2D[];
 
 //////////
 //GAMEPLAY
+//////////
 // Other Variables
 private var turn : int; // -1 -> X; 1 -> O;
 turn = -1;
@@ -56,29 +60,16 @@ scoreSums = new int[8]; // 8 выигрышных комбинаций
 for (score in scoreSums) {
 	score = 0;
 }
-// BoardState
-private var boardState = new Array(boardSize);
-for (var i = 0; i < boardSize; i++) {
-	boardState[i] = new Array(boardSize);
-	for (var j = 0; j < boardSize; j++) {
-		boardState[i][j] = 0;
-	}
-}
-// BoardWeight
-private var boardWeight = new Array(boardSize);
-for (i = 0; i < boardSize; i++) {
-	boardWeight[i] = new Array(boardSize);
-	for (j = 0; j < boardSize; j++) {
-		boardWeight[i][j] = 0;
-	}
-}
+
 /////////
 //MAIN UI
+/////////
 function OnGUI() {
 	GUI.skin = myGUISkin;
 	GUI.DrawTexture(Rect(0, 0, Screen.width, Screen.height), backGround);
 	DrawGamePanel();
 	DrawBoard();
+	Debug.Log(boardButtons.Length);
 }
 
 function DrawGamePanel() {
@@ -87,7 +78,6 @@ function DrawGamePanel() {
 	var Y : int;
 	X = Screen.width/2 - gamePanelBackground.width/2;
 	Y = 0;
-	
 	// Background
 	GUI.Label(Rect(X, Y, gamePanelBackground.width, gamePanelBackground.height), gamePanelBackground);
 	
@@ -129,45 +119,24 @@ function DrawBoard() {
 	// Position
 	var x : int;
 	var y : int;
-	x = Screen.width/2 - (boardSize*boardButtonWidth)/2;
+	x = Screen.width/2 - (board.size*boardButtons[0].width)/2;
 	y = gamePanelBackground.height;
 	
 	// Field Buttons
 	for (var i = 0; i < boardSize; i++) {
 		for (var j = 0; j < boardSize; j++) {
-			if (GUI.Button(Rect(x+j*boardButtons[0].width, y+i*boardButtons[0].height, boardButtons[0].width, boardButtons[0].height), boardButtons[boardState[i][j] + 1])) {
+			if (GUI.Button(Rect(x+j*boardButtons[0].width, y+i*boardButtons[0].height, boardButtons[0].width, boardButtons[0].height), boardButtons[board.field[i][j].state + 1])) {
 				if ((tie || winner) != 0) {
-					ResetBoard();
+					board.Reset();
 					return;
 				}
-				else if (boardState[i][j] == 0) {
-					boardState[i][j] = turn;
+				else if (board.field[i][j].state == 0) {
+					board.field[i][j].state = turn;
 					turn *= -1;
 				}
 			}
 		}
 	}
-}
-
-function ResetBoard() {
-	for (i = 0; i < boardSize; i++) {
-		for (j = 0; j < boardSize; j++) {
-			boardState[i][j] = 0;
-		}
-	}
-	for (i = 0; i < boardSize; i++) {
-		for (j = 0; j < boardSize; j++) {
-			boardWeight[i][j] = 0;
-		}
-	}
-}
-
-function PCTurn() {
-	
-}
-
-function calculateWeight(x : int, y : int) {
-	
 }
 
 function Update () {
