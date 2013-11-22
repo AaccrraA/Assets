@@ -8,7 +8,7 @@
 	public function Field(i : int, j : int) {
 		this.x = i;
 		this.y = j;
-		this.state = 
+		this.state = 0;
 		this.weight = 0;
 		isNearBy = false;
 	}

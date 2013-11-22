@@ -1,18 +1,16 @@
-﻿//////////
-//GUI SKIN
-//////////
+﻿////////////
+//GUI SKIN//
+////////////
 var myGUISkin : GUISkin; // skin без оформления(невидимый)
 
-////////////
-//BACKGROUND
-////////////
+//////////////
+//BACKGROUND//
+//////////////
 var backGround : Texture2D;
-private var Screen_width = Screen.width;
-private var Screen_height = Screen.height;
 
-///////
-//BOARD
-///////
+/////////
+//BOARD//
+/////////
 // Board Size
 var boardSize : int;
 if (Screen.width > Screen.height - gamePanelBackground.height) {
@@ -21,15 +19,15 @@ if (Screen.width > Screen.height - gamePanelBackground.height) {
 else {
 	boardSize = Screen.width/boardButtons[0].width;
 }
-// Button Lables
+// Button Lables For Unity Inspector
 var boardButtons : Texture2D[]; // массив трех текстур кнопки
-
 // Board
-var board : Board = new Board(boardSize);
+var board : Board = new Board(boardSize, boardButtons);
 
-////////////
-//GAME PANEL
-////////////
+//////////////
+//GAME PANEL//
+//////////////
+// GamePanel Background For Unity Inspector
 var gamePanelBackground : Texture2D;
 // Score Table
 private var scoreTable : int[];
@@ -45,9 +43,9 @@ var oScoreDigits : Texture2D[]; //текстуры для O
 var xTurnImage : Texture2D[];
 var oTurnImage : Texture2D[];
 
-//////////
-//GAMEPLAY
-//////////
+////////////
+//GAMEPLAY//
+////////////
 // Other Variables
 private var turn : int; // -1 -> X; 1 -> O;
 turn = -1;
@@ -61,15 +59,15 @@ for (score in scoreSums) {
 	score = 0;
 }
 
-/////////
-//MAIN UI
-/////////
+///////////
+//MAIN UI//
+///////////
 function OnGUI() {
 	GUI.skin = myGUISkin;
 	GUI.DrawTexture(Rect(0, 0, Screen.width, Screen.height), backGround);
 	DrawGamePanel();
 	DrawBoard();
-	Debug.Log(boardButtons.Length);
+	Debug.Log(board.buttonLables.Length);
 }
 
 function DrawGamePanel() {
@@ -125,7 +123,7 @@ function DrawBoard() {
 	// Field Buttons
 	for (var i = 0; i < boardSize; i++) {
 		for (var j = 0; j < boardSize; j++) {
-			if (GUI.Button(Rect(x+j*boardButtons[0].width, y+i*boardButtons[0].height, boardButtons[0].width, boardButtons[0].height), boardButtons[board.field[i][j].state + 1])) {
+			if (GUI.Button(Rect(x+j*boardButtons[0].width, y+i*boardButtons[0].height, boardButtons[0].width, boardButtons[0].height), boardButtons[board.field[i][j].state+1])) {
 				if ((tie || winner) != 0) {
 					board.Reset();
 					return;

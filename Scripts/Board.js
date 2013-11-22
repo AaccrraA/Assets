@@ -15,9 +15,11 @@
 				//Debug.Log("[" + i + "," + j + "]=" + "x:" + field[i][j].x + ", y:" + field[i][j].y);
 			}
 		}
-		for (var i = 0; i < bttnLbls.Length; i++) {
-			this.buttonLabels[i] = bttnLbls[i];
-		}
+		this.buttonLabels = bttnLbls;
+		
+		//for (i = 0; i < bttnLbls.Length; i++) {
+		//	this.buttonLabels[i] = bttnLbls[i];
+		//}
 	}
 	
 	public function Print() {
