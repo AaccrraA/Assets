@@ -2,13 +2,11 @@
 //GUI SKIN
 var myGUISkin : GUISkin; // skin без оформления(невидимый)
 
-public var myAi : AI = null;
-
 ////////////
 //BACKGROUND
 var backGround : Texture2D;
-var Screen_width = Screen.width;
-var Screen_height = Screen.height;
+private var Screen_width = Screen.width;
+private var Screen_height = Screen.height;
 
 ///////
 //BOARD
@@ -68,9 +66,9 @@ for (var i = 0; i < boardSize; i++) {
 }
 // BoardWeight
 private var boardWeight = new Array(boardSize);
-for (var i = 0; i < boardSize; i++) {
+for (i = 0; i < boardSize; i++) {
 	boardWeight[i] = new Array(boardSize);
-	for (var j = 0; j < boardSize; j++) {
+	for (j = 0; j < boardSize; j++) {
 		boardWeight[i][j] = 0;
 	}
 }
@@ -152,16 +150,24 @@ function DrawBoard() {
 }
 
 function ResetBoard() {
-	for (var i = 0; i < boardSize; i++) {
-		for (var j = 0; j < boardSize; j++) {
+	for (i = 0; i < boardSize; i++) {
+		for (j = 0; j < boardSize; j++) {
 			boardState[i][j] = 0;
 		}
 	}
-	for (var i = 0; i < boardSize; i++) {
-		for (var j = 0; j < boardSize; j++) {
+	for (i = 0; i < boardSize; i++) {
+		for (j = 0; j < boardSize; j++) {
 			boardWeight[i][j] = 0;
 		}
 	}
+}
+
+function PCTurn() {
+	
+}
+
+function calculateWeight(x : int, y : int) {
+	
 }
 
 function Update () {
