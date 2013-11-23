@@ -10,14 +10,27 @@
 		this.i = i;
 		this.j = j;
 		state = 0;
-		weightForX = 0;
-		weightForO = 0;
+		weightForX = -1;
+		weightForO = -1;
 		isNearBy = false;
+	}
+	
+	function GetWeight() {
+		if (state == -1) {
+			return weightForX;
+		}
+		else if (state == 1) {
+			return weightForO;
+		}
+		else {
+			return -1;
+		}
 	}
 	
 	function Reset() {
 		state = 0;
-		weight = 0;
+		weightForX = -1;
+		weightForO = -1;
 		isNearBy = false;
 	}
 }

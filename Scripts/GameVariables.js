@@ -19,6 +19,10 @@
 		}
 	}
 	
+	function NextTurn() {
+		turn = turn * (-1);
+	}
+	
 	function Reset() {
 	}
 }

@@ -25,12 +25,10 @@
 			for (var j = 0; j < size; j++) {
 				if (GUI.Button(Rect(X+j*boardLables[0].width, Y+i*boardLables[0].height, boardLables[0].width, boardLables[0].height), boardLables[field[i][j].state+1])) {
 					if (field[i][j].state == 0) {
+						field[i][j].Reset();
 						field[i][j].state = game.turn;
-						if (field[i][j].isNearBy) {
-							field[i][j].isNearBy = false;
-							Debug.Log("We something change^^");
-						}
-						game.turn *= -1;
+						//check for win
+						game.NextTurn();
 						AITurn(game);
 					}
 				}
@@ -42,7 +40,7 @@
 		var K = 2;
 		var weightOfField : int = 0;
 		var weightOfSequence : int = 0;
-
+		
 		// Horizontal
 		for (var i = 0; i < game.fieldsForWin; i++) {
 			weightOfSequence = 0;
@@ -69,7 +67,7 @@
 				weightOfField += Mathf.Pow(K, weightOfSequence);
 			}
 		}
-		Debug.Log("H _ wF = " + weightOfField + " _ wS = " + weightOfSequence);
+		//Debug.Log("H _ wF = " + weightOfField + " _ wS = " + weightOfSequence);
 		
 		// Vertical
 		for (i = 0; i < game.fieldsForWin; i++) {
@@ -97,7 +95,7 @@
 				weightOfField += Mathf.Pow(K, weightOfSequence);
 			}
 		}
-		Debug.Log("V _ wF = " + weightOfField + " _ wS = " + weightOfSequence);
+		//Debug.Log("V _ wF = " + weightOfField + " _ wS = " + weightOfSequence);
 		
 		// Left Diagonal \
 		for (i = 0; i < game.fieldsForWin; i++) {
@@ -125,7 +123,7 @@
 				weightOfField += Mathf.Pow(K, weightOfSequence);
 			}
 		}
-		Debug.Log("LD _ wF = " + weightOfField + " _ wS = " + weightOfSequence);
+		//Debug.Log("LD _ wF = " + weightOfField + " _ wS = " + weightOfSequence);
 
 		// Right Diagonal /
 		for (i = 0; i < game.fieldsForWin; i++) {
@@ -153,7 +151,7 @@
 				weightOfField += Mathf.Pow(K, weightOfSequence);
 			}
 		}
-		Debug.Log("RD _ wF = " + weightOfField + " _ wS = " + weightOfSequence);
+		//Debug.Log("RD _ wF = " + weightOfField + " _ wS = " + weightOfSequence);
 		
 		if (player == -1) {
 			f.weightForX = weightOfField;
@@ -165,6 +163,28 @@
 	
 	function AITurn(game : GameVariables) {
 		DefineNearByFields();
+		var OMaxWeight = 0;
+		var XMaxWeight = 0;
+		var iMax= 0;
+		var jMax= 0;
+		for (var i = 0; i < size; i++) {
+			for (var j = 0; j < size; j++) {
+				if (field[i][j].isNearby) {
+					CalculateWeight(game.turn, field[i][j], game);
+					CalculateWeight(game.turn*(-1), field[i][j], game);
+					if (OMaxWeight <= field[i][j].weightForO || OMaxWeight <= field[i][j].weightForX) {
+						OMaxWeight = field[i][j].weightForO;
+						XMaxWeight = field[i][j].weightForX;
+						iMax = i;
+						jMax = j;
+					}
+				}
+			}
+		}
+		Debug.Log("iMax = " + iMax + "___jMax = " + jMax);
+		field[iMax][jMax].Reset();
+		field[iMax][jMax].state = game.turn;
+		game.NextTurn();
 	}
 	
 	function DefineNearByFields() {
@@ -177,6 +197,7 @@
 							if (i+k >= 0 && j+z >= 0 && i+k < size && j+z < size && (k!=0 || z !=0)) {
 								if (field[i+k][j+z].isNearBy == false && field[i+k][j+z].state == 0) {
 									field[i+k][j+z].isNearBy = true;
+									//CalculateWeight(game.turn, field[i][j], game);
 									count++;
 								}
 							}
