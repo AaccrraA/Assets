@@ -11,15 +11,14 @@ var backGround : Texture2D;
 /////////
 //BOARD//
 /////////
+private var board : Board;
 // Button Lables For Unity Inspector
 var boardLables : Texture2D[]; // массив трех текстур кнопки
-// Board
-var board : Board;
 
 //////////////
 //GAME PANEL//
 //////////////
-var gamePanel : GamePanel;
+private var gamePanel : GamePanel;
 // GamePanel Background For Unity Inspector
 var gamePanelBackground : Texture2D;
 // Score Labels
@@ -69,12 +68,9 @@ function Start() {
 ///////////
 function OnGUI() {
 	GUI.skin = myGUISkin;
-	//GUI.DrawTexture(Rect(0, 0, Screen.width, Screen.height), backGround);
+	GUI.DrawTexture(Rect(0, 0, Screen.width, Screen.height), backGround);
 	gamePanel.Draw(gameVars);
 	board.Draw(gameVars);
-}
-
-function DrawGamePanel() {
 }
 
 function Update () {
