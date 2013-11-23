@@ -4,11 +4,12 @@
 	var size;
 	var field;
 	var boardLables : Texture2D[];
-	var bB : Texture2D[];
 	
-	function Board(x : int, y : int, s : int, boardButtons : Texture2D[]) {
+	function Board(x : int, y : int, s : int, brdLbls : Texture2D[]) {
+		X = x;
+		Y = y;
 		size = s;
-		bB = boardButtons;
+		boardLables = brdLbls;
 		field = new Array(s);
 		for (var i = 0; i < s; i++) {
 			field[i] = new Array(s);
@@ -19,22 +20,21 @@
 	}
 	
 	function Draw(game : GameVariables) {
-	
-	// Field Buttons
-	for (var i = 0; i < size; i++) {
-		for (var j = 0; j < size; j++) {
-			if (GUI.Button(Rect(x+j*bB[0].width, y+i*bB[0].height, bB[0].width, bB[0].height), bB[field[i][j].state+1])) {
-				if ((game.tie || game.winner) != 0) {
-					Reset();
-					return;
-				}
-				else if (field[i][j].state == 0) {
-					field[i][j].state = game.turn;
-					game.turn *= -1;
+		// Field Buttons
+		for (var i = 0; i < size; i++) {
+			for (var j = 0; j < size; j++) {
+				if (GUI.Button(Rect(X+j*boardLables[0].width, Y+i*boardLables[0].height, boardLables[0].width, boardLables[0].height), boardLables[field[i][j].state+1])) {
+					if ((game.tie || game.winner) != 0) {
+						Reset();
+						return;
+					}
+					else if (field[i][j].state == 0) {
+						field[i][j].state = game.turn;
+						game.turn *= -1;
+					}
 				}
 			}
 		}
-	}
 }
 	
 	function Print() {
