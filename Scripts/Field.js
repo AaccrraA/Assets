@@ -1,15 +1,15 @@
-﻿class Field extends System.ValueType{
+﻿class Field {
 	var x : int;
 	var y : int;
 	var state : int;
 	var weight : int;
 	var isNearBy : boolean;
 
-	public function Field(i : int, j : int) {
-		this.x = i;
-		this.y = j;
-		this.state = 0;
-		this.weight = 0;
+	function Field(i : int, j : int) {
+		x = i;
+		y = j;
+		state = 0;
+		weight = 0;
 		isNearBy = false;
 	}
 }

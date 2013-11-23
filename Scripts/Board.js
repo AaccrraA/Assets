@@ -1,46 +1,57 @@
-﻿class Board extends System.ValueType {
-	var size : int;
+﻿class Board{
+	var X : int;
+	var Y : int;
+	var size;
 	var field;
-	var buttonLabels : Texture2D[];
+	var boardLables : Texture2D[];
+	var bB : Texture2D[];
 	
-	public function Board(s : int, bttnLbls : Texture2D[]) {
-		this.size = s;
-		this.field = new Array(s);
+	function Board(x : int, y : int, s : int, boardButtons : Texture2D[]) {
+		size = s;
+		bB = boardButtons;
+		field = new Array(s);
 		for (var i = 0; i < s; i++) {
 			field[i] = new Array(s);
 			for (var j = 0; j < s; j++) {
 				field[i][j] = new Field(i, j);
-				field[i][j].x = i;
-				field[i][j].y = j;
-				//Debug.Log("[" + i + "," + j + "]=" + "x:" + field[i][j].x + ", y:" + field[i][j].y);
 			}
 		}
-		this.buttonLabels = bttnLbls;
-		
-		//for (i = 0; i < bttnLbls.Length; i++) {
-		//	this.buttonLabels[i] = bttnLbls[i];
-		//}
 	}
 	
-	public function Print() {
-		for (var i = 0; i < this.size; i++) {
-			for (var j = 0; j < this.size; j++) {
+	function Draw(game : GameVariables) {
+	
+	// Field Buttons
+	for (var i = 0; i < size; i++) {
+		for (var j = 0; j < size; j++) {
+			if (GUI.Button(Rect(x+j*bB[0].width, y+i*bB[0].height, bB[0].width, bB[0].height), bB[field[i][j].state+1])) {
+				if ((game.tie || game.winner) != 0) {
+					Reset();
+					return;
+				}
+				else if (field[i][j].state == 0) {
+					field[i][j].state = game.turn;
+					game.turn *= -1;
+				}
+			}
+		}
+	}
+}
+	
+	function Print() {
+		for (var i = 0; i < size; i++) {
+			for (var j = 0; j < size; j++) {
 				Debug.Log("[" + i + "," + j + "]=" + "x:" + field[i][j].x + ", y:" + field[i][j].y);
 			}
 		}
 	}
 	
-	public function Reset() {
-		for (var i = 0; i < this.size; i++) {
-			for (var j = 0; j < this.size; j++) {
+	function Reset() {
+		for (var i = 0; i < size; i++) {
+			for (var j = 0; j < size; j++) {
 				field[i][j].state = 0;
 				field[i][j].weight = 0;
 				field[i][j].isNearBy = false;
 			}
 		}
-	}
-	
-	public function defineWeights() {
-		
 	}
 }
