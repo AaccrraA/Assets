@@ -9,7 +9,7 @@
 	
 	function GameVariables() {
 		turn = -1;
-		winner = 0;
+		winner = -1;
 		tie = false;
 		fieldsForWin = 3;
 		turnNum = 0;

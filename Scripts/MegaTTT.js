@@ -11,7 +11,7 @@ var backGround : Texture2D;
 /////////
 //BOARD//
 /////////
-private var board : Board;
+var board : Board;
 // Button Lables For Unity Inspector
 var boardLables : Texture2D[]; // массив трех текстур кнопки
 
