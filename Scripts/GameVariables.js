@@ -1,14 +1,15 @@
 ﻿class GameVariables {
 	var turn; // -1 -> X; 1 -> O;
+	var K : int;
 	var winner;
 	var tie : boolean;
 	var fieldsForWin : int;
 	var turnNum : int;
-	// Score Table
 	var scoreTable : int[];
 	
 	function GameVariables() {
 		turn = -1;
+		K = 2;
 		winner = -1;
 		tie = false;
 		fieldsForWin = 3;
