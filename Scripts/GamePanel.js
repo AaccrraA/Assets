@@ -55,16 +55,16 @@
 		oTurnOffset_Y = 24;
 	}
 	
-	public function Draw(gameVars : GameVariables) {
+	public function Draw(game : Game) {
 		// Background
 		GUI.Label(Rect(X, Y, backGround.width, backGround.height), backGround);
 		
 		// Indicators
-		if (gameVars.turn == -1) {
+		if (game.CurrentTurn() == -1) {
 		GUI.Label(Rect(X+xTurnOffset_X, Y+xTurnOffset_Y, xTurnLable[0].width, xTurnLable[0].height), xTurnLable[1]);
 		GUI.Label(Rect(X+oTurnOffset_X, Y+oTurnOffset_Y, oTurnLable[0].width, oTurnLable[0].height), oTurnLable[0]);
 		}
-		else if (gameVars.turn == 1){
+		else if (game.CurrentTurn() == 1){
 			GUI.Label(Rect(X+oTurnOffset_X, Y+oTurnOffset_Y, oTurnLable[0].width, oTurnLable[0].height), oTurnLable[1]);
 			GUI.Label(Rect(X+xTurnOffset_X, Y+xTurnOffset_Y, xTurnLable[0].width, xTurnLable[0].height), xTurnLable[0]);
 		}
@@ -73,16 +73,16 @@
 		var lDigit : int;
 		var rDigit : int;
 		// X
-		lDigit = gameVars.scoreTable[0]/10;
-		rDigit = gameVars.scoreTable[0]%10;
+		lDigit = game.scoreTable[0]/10;
+		rDigit = game.scoreTable[0]%10;
 		if (lDigit > 9) {
 			lDigit = 9;
 		}
 		GUI.Label(Rect(X+xScoreOffset_X, Y+xScoreOffset_Y, xScoreDigits[0].width, xScoreDigits[0].height), xScoreDigits[lDigit]);
 		GUI.Label(Rect(X+xScoreOffset_X+xScoreDigits[0].width+scoreSpacing, Y+xScoreOffset_Y, xScoreDigits[0].width, xScoreDigits[0].height), xScoreDigits[rDigit]);
 		// O
-		lDigit = gameVars.scoreTable[2]/10;
-		rDigit = gameVars.scoreTable[2]%10;
+		lDigit = game.scoreTable[2]/10;
+		rDigit = game.scoreTable[2]%10;
 		if (lDigit > 9) {
 			lDigit = 9;
 		}

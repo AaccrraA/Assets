@@ -19,24 +19,175 @@
 		}
 	}
 	
-	function Draw(game : GameVariables) {
+	function DrawAndHumanTurn(game : Game) {
 		// Field Buttons
 		for (var i = 0; i < size; i++) {
 			for (var j = 0; j < size; j++) {
-				if (GUI.Button(Rect(X+j*boardLables[0].width, Y+i*boardLables[0].height, boardLables[0].width, boardLables[0].height), boardLables[field[i][j].state+1])) {
+				if (GUI.Button(Rect(X+j*boardLables[0].width, Y+i*boardLables[0].height, boardLables[0].width, boardLables[0].height), boardLables[field[i][j].state+1]) && game.CurrentTurn() == -1) {
 					if (field[i][j].state == 0) {
 						field[i][j].Reset();
-						field[i][j].state = game.turn;
-						//check for win
-						game.NextTurn();
-						AITurn(game);
+						field[i][j].state = game.CurrentTurn();
+						Debug.Log("You had turn at field["+i+"]["+j+"]");
+						if (!isEndOfGame(field[i][j], game)) {
+							game.NextTurn();
+							AITurn(game);
+						}
 					}
+				}
+				if (game.CurrentTurn() == 1) {
+					AITurn(game);
 				}
 			}
 		}
 	}
 	
-	function AITurn(game : GameVariables) {
+	function isEndOfGame(f : Field, game : Game) {
+		var isEnd = false;
+		// Horiontal
+		var count = 1;
+		for (var z = 1; z < game.FieldsForWin(); z++) {
+			if (f.j-z >= 0) {
+				if (field[f.i][f.j-z].state == f.state) {
+					count++;
+				}
+				else {
+					break;
+				}
+			}
+		}
+		for (z = 1; z < game.FieldsForWin(); z++) {
+			if (f.j+z < size) {
+				if (field[f.i][f.j+z].state == f.state) {
+					count++;
+				}
+				else {
+					break;
+				}
+			}
+		}
+		if (count == game.FieldsForWin()) {
+			game.winner = f.state + 1;
+			game.scoreTable[f.state+1]++;
+			Reset();
+			game.Reset();
+			isEnd = true;
+		}
+		Debug.	Log("V _ gW	 = " + game.winner);
+		
+		// Vertical
+		count = 1;
+		for (z = 1; z < game.FieldsForWin(); z++) {
+			if (f.i-z >= 0) {
+				if (field[f.i-z][f.j].state == f.state) {
+					count++;
+				}
+				else {
+					break;
+				}
+			}
+		}
+		for (z = 1; z < game.FieldsForWin(); z++) {
+			if (f.i+z < size) {
+				if (field[f.i+z][f.j].state == f.state) {
+					count++;
+				}
+				else {
+					break;
+				}
+			}
+		}
+		if (count == game.FieldsForWin()) {
+			game.winner = f.state + 1;
+			game.scoreTable[f.state+1]++;
+			Reset();
+			game.Reset();
+			isEnd = true;
+		}
+		Debug.Log("H _ gW = " + game.winner);
+	
+		// Left Diagonal \count = 1;
+		count = 1;
+		for (z = 1; z < game.FieldsForWin(); z++) {
+			if (f.i-z >= 0 && f.j-z >= 0) {
+				if (field[f.i-z][f.j-z].state == f.state) {
+					count++;
+				}
+				else {
+					break;
+				}
+			}
+		}
+		for (z = 1; z < game.FieldsForWin(); z++) {
+			if (f.i+z < size && f.j+z < size) {
+				if (field[f.i+z][f.j+z].state == f.state) {
+					count++;
+				}
+				else {
+					break;
+				}
+			}
+		}
+		if (count == game.FieldsForWin()) {
+			game.winner = f.state + 1;
+			game.scoreTable[f.state+1]++;
+			Reset();
+			game.Reset();
+			isEnd = true;
+		}
+		Debug.Log("LD _ gW = " + game.winner);
+
+		// Right Diagonal /
+		count = 1;
+		for (z = 1; z < game.FieldsForWin(); z++) {
+			if (f.i-z >= 0 && f.j+z < size) {
+				if (field[f.i-z][f.j+z].state == f.state) {
+					count++;
+				}
+				else {
+					break;
+				}
+			}
+		}
+		for (z = 1; z < game.FieldsForWin(); z++) {
+			if (f.i+z < size && f.j-z >= 0) {
+				if (field[f.i+z][f.j-z].state == f.state) {
+					count++;
+				}
+				else {
+					break;
+				}
+			}
+		}
+		if (count == game.FieldsForWin()) {
+			game.winner = f.state + 1;
+			game.scoreTable[f.state+1]++;
+			Reset();
+			game.Reset();
+			isEnd = true;
+		}
+		Debug.Log("RD _ gW = " + game.winner);
+		
+		// Tie
+		count = 0;
+		for(var i = 0; i < size; i++) {
+			for (var j = 0; j < size; j++) {
+				if (field[i][j].state == 0) {
+					count++;
+				}
+			}
+		}
+		if (count == 0) {
+			game.winner = 1;
+			Reset();
+			game.Reset();
+			isEnd = true;
+		}
+		
+		Debug.Log("---------");
+		return isEnd;
+	}
+	
+	function AITurn(game : Game) {
 		DefineNearByFields();
 		var nearByFields = new Array();
 		var maxWeight = 0;
@@ -45,31 +196,60 @@
 				if (field[i][j].isNearBy == true) {
 					//Debug.Log("We check Field["+i+"]["+j+"] that is Nearby");
 					nearByFields.Push(field[i][j]);
-					CalculateWeight(game.turn, field[i][j], game);
+					CalculateWeight(game.CurrentTurn(), field[i][j], game);
 					if (field[i][j].weight > maxWeight) {
 						maxWeight = field[i][j].weight;
 					}
 				}
 			}
 		}
-		//Debug.Log(nearByFields.length);
+		
 		for (i = 0; i < nearByFields.length; i++) {
 			//Debug.Log("Field["+nearByFields[i].i+"]["+nearByFields[i].j+"].weight = "+nearByFields[i].weight);
-			for (j = 0; j < nearByFields.length; j++) {
-				if (nearByFields[i].weight > nearByFields[j].weight) {
-					nearByFields.RemoveAt(j);
-					
-				}
+			if (maxWeight < nearByFields[i].weight) {
+				maxWeight = nearByFields[i].weight;
 			}
 		}
+		//Debug.Log("MAX WEIGHT IS "+maxWeight);
 		for ( i = 0; i < nearByFields.length; i++) {
-			Debug.Log("Field["+nearByFields[i].i+"]["+nearByFields[i].j+"].weight = "+nearByFields[i].weight);
+			if (maxWeight > nearByFields[i].weight) {
+				//Debug.Log("field["+nearByFields[i].i+"]["+nearByFields[i].j+"] need to remove in index "+i);
+				nearByFields.RemoveAt(i);
+				i--;
+			}
 		}
-		Debug.Log("_-_-_-_");
+		
+		var r : int;
+		if (nearByFields.length != 0) {
+			r = Random.Range(0,nearByFields.length);
+			nearByFields[r].Reset();
+			nearByFields[r].state = game.CurrentTurn();
+			Debug.Log("O had turn at field["+nearByFields[r].i+"]["+nearByFields[r].j+"]");
+			if (!isEndOfGame(nearByFields[r], game)) {
+				game.NextTurn();
+			}
+		}
+		else {
+			var emptyFields = new Array();
+			for (i = 0; i < size; i++) {
+				for (j = 0; j < size; j++) {
+					if (field[i][j].state == 0) {
+						emptyFields.push(field[i][j]);
+					}
+				}
+			}
+			r = Random.Range(0,emptyFields.length);
+			emptyFields[r].Reset();
+			emptyFields[r].state = game.CurrentTurn();
+			Debug.Log("O had turn at field["+emptyFields[r].i+"]["+emptyFields[r].j+"]");
+			if (!isEndOfGame(emptyFields[r], game)) {
+				game.NextTurn();
+			}
+		}
 	}
 
 	function DefineNearByFields() {
-		var count = 0;
+		var nearByCount = 0;
 		for (var i = 0; i < size; i++) {
 			for (var j = 0; j < size; j++) {
 				if (field[i][j].state != 0) {
@@ -79,7 +259,7 @@
 							if (i+k >= 0 && j+z >= 0 && i+k < size && j+z < size && (k!=0 || z !=0)) {
 								if (field[i+k][j+z].isNearBy == false && field[i+k][j+z].state == 0) {
 									field[i+k][j+z].isNearBy = true;
-									count++;
+									nearByCount++;
 									//Debug.Log("Field["+i+"+"+k+"]["+j+"+"+z+"] is new nearByField");
 								}
 							}
@@ -88,6 +268,8 @@
 				}
 			}
 		}
+		
+		return nearByCount;
 	}
 	
 	function Reset() {
@@ -98,7 +280,7 @@
 		}
 	}
 	
-	function CalculateWeight(p : int, f : Field, game : GameVariables) {
+	function CalculateWeight(p : int, f : Field, game : Game) {
 		var weightForO : int = 0;
 		var weightForX : int = 0;
 		weightForO = HorCalcWeight(p, f, game) + VerCalcWeight(p, f, game) + LDiagCalcWeight(p, f, game) + RDiagCalcWeight(p, f, game);
@@ -106,23 +288,15 @@
 		weightForX = HorCalcWeight(p*(-1), f, game) + VerCalcWeight(p*(-1), f, game) + LDiagCalcWeight(p*(-1), f, game) + RDiagCalcWeight(p*(-1), f, game);
 		//Debug.Log("Weight of F["+f.i+"]["+f.j+"] is "+weightForX+" for "+p*(-1));
 		f.weight = weightForO+weightForX;
-		/*
-		if (weightForO > weightForX) {
-			f.weight = weightForO;
-		}
-		else {
-			f.weight = weightForX;
-		}
-		*/
 	}
 	
-	function HorCalcWeight(p : int, f : Field, game : GameVariables) {
+	function HorCalcWeight(p : int, f : Field, game : Game) {
 		var weightOfField = 0;
 		var weightOfSequence = 0;
 		// Horizontal
-		for (var i = 0; i < game.fieldsForWin; i++) {
+		for (var i = 0; i < game.FieldsForWin(); i++) {
 			weightOfSequence = 0;
-			for (var k = 0; k < game.fieldsForWin; k++) {
+			for (var k = 0; k < game.FieldsForWin(); k++) {
 				if (f.j+i-k >= 0 && f.j+i-k < size) {
 					if (field[f.i][f.j+i-k].state == p*(-1)) {
 						weightOfSequence = 0;
@@ -136,7 +310,7 @@
 					weightOfSequence = 0;
 					break;
 				}
-				if (weightOfSequence == game.fieldsForWin-1) {
+				if (weightOfSequence == game.FieldsForWin()-1) {
 					if (p == 1) {
 						weightOfSequence = 11;
 					}
@@ -155,14 +329,14 @@
 		return weightOfField;
 	}
 	
-	function VerCalcWeight(p : int, f : Field, game : GameVariables) {
+	function VerCalcWeight(p : int, f : Field, game : Game) {
 		var weightOfField = 0;
 		var weightOfSequence = 0;
 		
 		// Vertical
-		for (i = 0; i < game.fieldsForWin; i++) {
+		for (i = 0; i < game.FieldsForWin(); i++) {
 			weightOfSequence = 0;
-			for (k = 0; k < game.fieldsForWin; k++) {
+			for (k = 0; k < game.FieldsForWin(); k++) {
 				if (f.i+i-k >= 0 && f.i+i-k < size) {
 					if (field[f.i+i-k][f.j].state == p*(-1)) {
 						weightOfSequence = 0;
@@ -176,7 +350,7 @@
 					weightOfSequence = 0;
 					break;
 				}
-				if (weightOfSequence == game.fieldsForWin-1) {
+				if (weightOfSequence == game.FieldsForWin()-1) {
 					if (p == 1) {
 						weightOfSequence = 11;
 					}
@@ -195,14 +369,14 @@
 		return weightOfField;
 	}
 	
-	function LDiagCalcWeight(p : int, f : Field, game : GameVariables) {
+	function LDiagCalcWeight(p : int, f : Field, game : Game) {
 		var weightOfField = 0;
 		var weightOfSequence = 0;
 		
 		// Left Diagonal \
-		for (i = 0; i < game.fieldsForWin; i++) {
+		for (i = 0; i < game.FieldsForWin(); i++) {
 			weightOfSequence = 0;
-			for (k = 0; k < game.fieldsForWin; k++) {
+			for (k = 0; k < game.FieldsForWin(); k++) {
 				if ((f.i+i-k >= 0 && f.i+i-k < size) && (f.j+i-k >= 0 && f.j+i-k < size)) {
 					if (field[f.i+i-k][f.j+i-k].state == p*(-1)) {
 						weightOfSequence = 0;
@@ -216,7 +390,7 @@
 					weightOfSequence = 0;
 					break;
 				}
-				if (weightOfSequence == game.fieldsForWin-1) {
+				if (weightOfSequence == game.FieldsForWin()-1) {
 					if (p == 1) {
 						weightOfSequence = 11;
 					}
@@ -235,14 +409,14 @@
 		return weightOfField;
 	}
 	
-	function RDiagCalcWeight(p : int, f : Field, game : GameVariables) {
+	function RDiagCalcWeight(p : int, f : Field, game : Game) {
 		var weightOfField = 0;
 		var weightOfSequence = 0;
 		
 		// Right Diagonal /
-		for (i = 0; i < game.fieldsForWin; i++) {
+		for (i = 0; i < game.FieldsForWin(); i++) {
 			weightOfSequence = 0;
-			for (k = 0; k < game.fieldsForWin; k++) {
+			for (k = 0; k < game.FieldsForWin(); k++) {
 				if ((f.i+i-k >= 0 && f.i+i-k < size) && (f.j-i+k >= 0 && f.j-i+k < size)) {
 					if (field[f.i+i-k][f.j+k-i].state == p*(-1)) {
 						weightOfSequence = 0;
@@ -256,7 +430,7 @@
 					weightOfSequence = 0;
 					break;
 				}
-				if (weightOfSequence == game.fieldsForWin-1) {
+				if (weightOfSequence == game.FieldsForWin()-1) {
 					if (p == 1) {
 						weightOfSequence = 11;
 					}
