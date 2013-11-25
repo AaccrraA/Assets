@@ -11,7 +11,7 @@ var backGround : Texture2D;
 /////////
 //BOARD//
 /////////
-var board : Board;
+private var board : Board;
 // Button Lables For Unity Inspector
 var boardLables : Texture2D[]; // массив трех текстур кнопки
 
@@ -31,10 +31,22 @@ var oTurnLable : Texture2D[];
 ////////
 //GAME//
 ////////
-var game : Game;
+private var game : Game;
 // WinnerLable
 var winnerLables : Texture2D[];
 
+////////
+//MENU//
+////////
+var menu : Menu;
+// MenuBackGround For Unity Inspector
+var menuBackGround : Texture2D;
+// Menu Choices
+var menuChoices : Texture2D[];
+
+//////////////
+//START INIT//
+//////////////
 function Start() {
 	// BOARD
 	// Size
@@ -72,6 +84,9 @@ function Start() {
 	else {
 		game.SetFieldsForWin(5);
 	}
+	
+	// MENU
+	menu = new Menu(menuBackGround, menuChoices);
 }
 
 ///////////
@@ -80,10 +95,22 @@ function Start() {
 function OnGUI() {
 	GUI.skin = myGUISkin;
 	GUI.DrawTexture(Rect(0, 0, Screen.width, Screen.height), backGround);
-	
+
+	if (game.IsPaused() == true) {
+		menu.Open(game, board);
+	}
+	else {
+		GameCycle();
+		if (Input.GetKeyUp(KeyCode.Escape)) {
+			game.SetPaused(!game.IsPaused());
+		}
+	}
+}
+
+function GameCycle () {
 	gamePanel.Draw(game);
 	board.Draw(game);
-	if (game.winner == -1) {
+	if (game.GetWinner() == -1) {
 		if (game.CurrentTurn() == -1) {
 			if (board.HumanTurn(game)) {
 				board.Update(game);
@@ -97,8 +124,4 @@ function OnGUI() {
 	else {
 		game.AnounceResults(board);
 	}
-}
-
-function Update () {
-
 }

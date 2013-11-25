@@ -48,7 +48,7 @@
 	}
 	
 	function Update(game : Game) {
-		if (game.winner == -1) {
+		if (game.GetWinner() == -1) {
 			var isEnd = false;
 			var f = lastField;
 			// Horiontal
@@ -75,7 +75,7 @@
 					}
 				}
 				if (count >= game.FieldsForWin()) {
-					game.winner = f.state + 1;
+					game.SetWinner(f.state + 1);
 					game.scoreTable[f.state+1]++;
 					//Reset();
 					//game.Reset();
@@ -108,7 +108,7 @@
 					}
 				}
 				if (count >= game.FieldsForWin()) {
-					game.winner = f.state + 1;
+					game.SetWinner(f.state + 1);
 					game.scoreTable[f.state+1]++;
 					//Reset();
 					//game.Reset();
@@ -141,7 +141,7 @@
 					}
 				}
 				if (count >= game.FieldsForWin()) {
-					game.winner = f.state + 1;
+					game.SetWinner(f.state + 1);
 					game.scoreTable[f.state+1]++;
 					//Reset();
 					//game.Reset();
@@ -174,7 +174,7 @@
 					}
 				}
 				if (count >= game.FieldsForWin()) {
-					game.winner = f.state + 1;
+					game.SetWinner(f.state + 1);
 					game.scoreTable[f.state+1]++;
 					//Reset();
 					//game.Reset();
@@ -194,7 +194,7 @@
 					}
 				}
 				if (count == 0) {
-					game.winner = 1;
+					game.SetWinner(1);
 					//Reset();
 					//game.Reset();
 					isEnd = true;
