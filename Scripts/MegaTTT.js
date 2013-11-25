@@ -31,7 +31,7 @@ var oTurnLable : Texture2D[];
 ////////////
 //GAMEPLAY//
 ////////////
-var gameVars : Game;
+var game : Game;
 
 function Start() {
 	// BOARD
@@ -60,15 +60,15 @@ function Start() {
 	
 	// GAME VARIABLES
 	// Init
-	gameVars = new Game();
+	game = new Game();
 	if (boardSize < 5) {
-		gameVars.SetFieldsForWin(3);
+		game.SetFieldsForWin(3);
 	}
 	else if (boardSize == 5) {
-		gameVars.SetFieldsForWin(4);
+		game.SetFieldsForWin(4);
 	}
 	else {
-		gameVars.SetFieldsForWin(5);
+		game.SetFieldsForWin(5);
 	}
 }
 
@@ -78,8 +78,10 @@ function Start() {
 function OnGUI() {
 	GUI.skin = myGUISkin;
 	GUI.DrawTexture(Rect(0, 0, Screen.width, Screen.height), backGround);
-	gamePanel.Draw(gameVars);
-	board.DrawAndHumanTurn(gameVars);
+	gamePanel.Draw(game);
+	//board.DrawAndHumanTurn(game);
+	board.Draw(game);
+	
 }
 
 function Update () {

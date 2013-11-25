@@ -19,6 +19,28 @@
 		}
 	}
 	
+	function Draw(game : Game) {
+		for (var i = 0; i < size; i++) {
+			for (var j = 0; j < size; j++) {
+				GUI.Label(Rect(X+j*boardLables[0].width, Y+i*boardLables[0].height, boardLables[0].width, boardLables[0].height), boardLables[field[i][j].state+1]);
+			}
+		}
+	}
+	
+	function HumanTurn(game : Game) {
+		for (var i = 0; i < size; i++) {
+			for (var j = 0; j < size; j++) {
+				if (GUI.Button(Rect(X+j*boardLables[0].width, Y+i*boardLables[0].height, boardLables[0].width, boardLables[0].height), "")) {
+					if (field[i][j].state == 0){//  && game.CurrentTurn() == -1) {
+						field[i][j].Reset();
+						field[i][j].state = game.CurrentTurn();
+						Debug.Log("You had turn at field["+i+"]["+j+"]");
+					}
+				}
+			}
+		}
+	}
+
 	function DrawAndHumanTurn(game : Game) {
 		// Field Buttons
 		for (var i = 0; i < size; i++) {
