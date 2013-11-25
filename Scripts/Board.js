@@ -4,7 +4,8 @@
 	var size;
 	var field;
 	var boardLables : Texture2D[];
-
+	var lastField : Field;
+	
 	function Board(x : int, y : int, s : int, brdLbls : Texture2D[]) {
 		X = x;
 		Y = y;
@@ -17,6 +18,7 @@
 				field[i][j] = new Field(i, j);
 			}
 		}
+		lastField = field[0][0];
 	}
 	
 	function Draw(game : Game) {
@@ -28,192 +30,179 @@
 	}
 	
 	function HumanTurn(game : Game) {
+		var isMadeTurn = false;
 		for (var i = 0; i < size; i++) {
 			for (var j = 0; j < size; j++) {
-				if (GUI.Button(Rect(X+j*boardLables[0].width, Y+i*boardLables[0].height, boardLables[0].width, boardLables[0].height), "")) {
-					if (field[i][j].state == 0){//  && game.CurrentTurn() == -1) {
-						field[i][j].Reset();
-						field[i][j].state = game.CurrentTurn();
-						Debug.Log("You had turn at field["+i+"]["+j+"]");
-					}
+				if (GUI.Button(Rect(X+j*boardLables[0].width, Y+i*boardLables[0].height, boardLables[0].width, boardLables[0].height), "") && field[i][j].state == 0) {
+					//  && game.CurrentTurn() == -1) {
+					field[i][j].Reset();
+					field[i][j].state = game.CurrentTurn();
+					lastField = field[i][j];
+					game.NextTurn();
+					Debug.Log("You had turn at field["+i+"]["+j+"]");
+					isMadeTurn = true;
 				}
 			}
 		}
+		return isMadeTurn;
 	}
-
-	function DrawAndHumanTurn(game : Game) {
-		// Field Buttons
-		for (var i = 0; i < size; i++) {
-			for (var j = 0; j < size; j++) {
-				if (GUI.Button(Rect(X+j*boardLables[0].width, Y+i*boardLables[0].height, boardLables[0].width, boardLables[0].height), boardLables[field[i][j].state+1])) {
-					if (field[i][j].state == 0  && game.CurrentTurn() == -1) {
-						field[i][j].Reset();
-						field[i][j].state = game.CurrentTurn();
-						Debug.Log("You had turn at field["+i+"]["+j+"]");
-						if (!isEndOfGame(field[i][j], game)) {
-							game.NextTurn();
-							AITurn(game);
+	
+	function Update(game : Game) {
+		if (game.winner == -1) {
+			var isEnd = false;
+			var f = lastField;
+			// Horiontal
+			if (!isEnd) {
+				var count = 1;
+				for (var z = 1; z < game.FieldsForWin(); z++) {
+					if (f.j-z >= 0) {
+						if (field[f.i][f.j-z].state == f.state) {
+							count++;
+						}
+						else {
+							break;
 						}
 					}
 				}
-				else if (game.CurrentTurn() == 1) {
-					AITurn(game);
-				}
-			}
-		}
-	}
-	
-	function isEndOfGame(f : Field, game : Game) {
-		var isEnd = false;
-		// Horiontal
-		var count = 1;
-		for (var z = 1; z < game.FieldsForWin(); z++) {
-			if (f.j-z >= 0) {
-				if (field[f.i][f.j-z].state == f.state) {
-					count++;
-				}
-				else {
-					break;
-				}
-			}
-		}
-		for (z = 1; z < game.FieldsForWin(); z++) {
-			if (f.j+z < size) {
-				if (field[f.i][f.j+z].state == f.state) {
-					count++;
-				}
-				else {
-					break;
-				}
-			}
-		}
-		if (count == game.FieldsForWin()) {
-			game.winner = f.state + 1;
-			game.scoreTable[f.state+1]++;
-			Reset();
-			game.Reset();
-			isEnd = true;
-		}
-		Debug.	Log("H _ count ="+count);
-		
-		// Vertical
-		if (!isEnd) {
-			count = 1;
-			for (z = 1; z < game.FieldsForWin(); z++) {
-				if (f.i-z >= 0) {
-					if (field[f.i-z][f.j].state == f.state) {
-						count++;
-					}
-					else {
-						break;
+				for (z = 1; z < game.FieldsForWin(); z++) {
+					if (f.j+z < size) {
+						if (field[f.i][f.j+z].state == f.state) {
+							count++;
+						}
+						else {
+							break;
+						}
 					}
 				}
+				if (count >= game.FieldsForWin()) {
+					game.winner = f.state + 1;
+					game.scoreTable[f.state+1]++;
+					//Reset();
+					//game.Reset();
+					isEnd = true;
+				}
+				//Debug.Log("H _ count ="+count);
 			}
-			for (z = 1; z < game.FieldsForWin(); z++) {
-				if (f.i+z < size) {
-					if (field[f.i+z][f.j].state == f.state) {
-						count++;
-					}
-					else {
-						break;
+			
+			// Vertical
+			if (!isEnd) {
+				count = 1;
+				for (z = 1; z < game.FieldsForWin(); z++) {
+					if (f.i-z >= 0) {
+						if (field[f.i-z][f.j].state == f.state) {
+							count++;
+						}
+						else {
+							break;
+						}
 					}
 				}
-			}
-			if (count == game.FieldsForWin()) {
-				game.winner = f.state + 1;
-				game.scoreTable[f.state+1]++;
-				Reset();
-				game.Reset();
-				isEnd = true;
-			}
-			Debug.Log("V _ count ="+count);
-		}
-		
-		if (!isEnd) {
-			// Left Diagonal \count = 1;
-			count = 1;
-			for (z = 1; z < game.FieldsForWin(); z++) {
-				if (f.i-z >= 0 && f.j-z >= 0) {
-					if (field[f.i-z][f.j-z].state == f.state) {
-						count++;
-					}
-					else {
-						break;
+				for (z = 1; z < game.FieldsForWin(); z++) {
+					if (f.i+z < size) {
+						if (field[f.i+z][f.j].state == f.state) {
+							count++;
+						}
+						else {
+							break;
+						}
 					}
 				}
+				if (count >= game.FieldsForWin()) {
+					game.winner = f.state + 1;
+					game.scoreTable[f.state+1]++;
+					//Reset();
+					//game.Reset();
+					isEnd = true;
+				}
+				//Debug.Log("V _ count ="+count);
 			}
-			for (z = 1; z < game.FieldsForWin(); z++) {
-				if (f.i+z < size && f.j+z < size) {
-					if (field[f.i+z][f.j+z].state == f.state) {
-						count++;
-					}
-					else {
-						break;
+			
+			if (!isEnd) {
+				// Left Diagonal \count = 1;
+				count = 1;
+				for (z = 1; z < game.FieldsForWin(); z++) {
+					if (f.i-z >= 0 && f.j-z >= 0) {
+						if (field[f.i-z][f.j-z].state == f.state) {
+							count++;
+						}
+						else {
+							break;
+						}
 					}
 				}
-			}
-			if (count == game.FieldsForWin()) {
-				game.winner = f.state + 1;
-				game.scoreTable[f.state+1]++;
-				Reset();
-				game.Reset();
-				isEnd = true;
-			}
-			Debug.Log("LD _ count ="+count);
-		}
-		
-		if (!isEnd) {
-			// Right Diagonal /
-			count = 1;
-			for (z = 1; z < game.FieldsForWin(); z++) {
-				if (f.i-z >= 0 && f.j+z < size) {
-					if (field[f.i-z][f.j+z].state == f.state) {
-						count++;
-					}
-					else {
-						break;
+				for (z = 1; z < game.FieldsForWin(); z++) {
+					if (f.i+z < size && f.j+z < size) {
+						if (field[f.i+z][f.j+z].state == f.state) {
+							count++;
+						}
+						else {
+							break;
+						}
 					}
 				}
+				if (count >= game.FieldsForWin()) {
+					game.winner = f.state + 1;
+					game.scoreTable[f.state+1]++;
+					//Reset();
+					//game.Reset();
+					isEnd = true;
+				}
+				//Debug.Log("LD _ count ="+count);
 			}
-			for (z = 1; z < game.FieldsForWin(); z++) {
-				if (f.i+z < size && f.j-z >= 0) {
-					if (field[f.i+z][f.j-z].state == f.state) {
-						count++;
-					}
-					else {
-						break;
+			
+			if (!isEnd) {
+				// Right Diagonal /
+				count = 1;
+				for (z = 1; z < game.FieldsForWin(); z++) {
+					if (f.i-z >= 0 && f.j+z < size) {
+						if (field[f.i-z][f.j+z].state == f.state) {
+							count++;
+						}
+						else {
+							break;
+						}
 					}
 				}
-			}
-			if (count == game.FieldsForWin()) {
-				game.winner = f.state + 1;
-				game.scoreTable[f.state+1]++;
-				Reset();
-				game.Reset();
-				isEnd = true;
-			}
-			Debug.Log("RD _ count ="+count);
-		}
-		
-		if (!isEnd) {
-			// Tie
-			count = 0;
-			for(var i = 0; i < size; i++) {
-				for (var j = 0; j < size; j++) {
-					if (field[i][j].state == 0) {
-						count++;
+				for (z = 1; z < game.FieldsForWin(); z++) {
+					if (f.i+z < size && f.j-z >= 0) {
+						if (field[f.i+z][f.j-z].state == f.state) {
+							count++;
+						}
+						else {
+							break;
+						}
 					}
 				}
+				if (count >= game.FieldsForWin()) {
+					game.winner = f.state + 1;
+					game.scoreTable[f.state+1]++;
+					//Reset();
+					//game.Reset();
+					isEnd = true;
+				}
+				//Debug.Log("RD _ count ="+count);
 			}
-			if (count == 0) {
-				game.winner = 1;
-				Reset();
-				game.Reset();
-				isEnd = true;
+			
+			if (!isEnd) {
+				// Tie
+				count = 0;
+				for(var i = 0; i < size; i++) {
+					for (var j = 0; j < size; j++) {
+						if (field[i][j].state == 0) {
+							count++;
+						}
+					}
+				}
+				if (count == 0) {
+					game.winner = 1;
+					//Reset();
+					//game.Reset();
+					isEnd = true;
+				}
+				//Debug.Log("Tie = " + isEnd);
 			}
 		}
 		
-		Debug.Log("ISEND RETURN "+isEnd);
 		return isEnd;
 	}
 	
@@ -234,12 +223,6 @@
 			}
 		}
 		
-		for (i = 0; i < nearByFields.length; i++) {
-			//Debug.Log("Field["+nearByFields[i].i+"]["+nearByFields[i].j+"].weight = "+nearByFields[i].weight);
-			if (maxWeight < nearByFields[i].weight) {
-				maxWeight = nearByFields[i].weight;
-			}
-		}
 		//Debug.Log("MAX WEIGHT IS "+maxWeight);
 		for ( i = 0; i < nearByFields.length; i++) {
 			if (maxWeight > nearByFields[i].weight) {
@@ -254,13 +237,13 @@
 			r = Random.Range(0,nearByFields.length);
 			nearByFields[r].Reset();
 			nearByFields[r].state = game.CurrentTurn();
+			lastField = nearByFields[r];
+			game.NextTurn();
 			Debug.Log("O had turn at field["+nearByFields[r].i+"]["+nearByFields[r].j+"]");
-			if (!isEndOfGame(nearByFields[r], game)) {
-				game.NextTurn();
-			}
 		}
 		else {
 			var emptyFields = new Array();
+			Debug.Log("Lol There is No NEARBYFIELDS +O+O++O+O");
 			for (i = 0; i < size; i++) {
 				for (j = 0; j < size; j++) {
 					if (field[i][j].state == 0) {
@@ -268,12 +251,13 @@
 					}
 				}
 			}
-			r = Random.Range(0,emptyFields.length);
-			emptyFields[r].Reset();
-			emptyFields[r].state = game.CurrentTurn();
-			Debug.Log("O had turn at field["+emptyFields[r].i+"]["+emptyFields[r].j+"]");
-			if (!isEndOfGame(emptyFields[r], game)) {
+			if (emptyFields.length != 0) {
+				r = Random.Range(0,emptyFields.length);
+				emptyFields[r].Reset();
+				emptyFields[r].state = game.CurrentTurn();
+				lastField = emptyFields[r];
 				game.NextTurn();
+				Debug.Log("O had turn at field["+emptyFields[r].i+"]["+emptyFields[r].j+"]");
 			}
 		}
 	}

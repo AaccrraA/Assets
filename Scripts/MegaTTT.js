@@ -28,10 +28,12 @@ var oScoreDigits : Texture2D[]; //текстуры для O
 var xTurnLable : Texture2D[];
 var oTurnLable : Texture2D[];
 
-////////////
-//GAMEPLAY//
-////////////
+////////
+//GAME//
+////////
 var game : Game;
+// WinnerLable
+var winnerLables : Texture2D[];
 
 function Start() {
 	// BOARD
@@ -58,9 +60,9 @@ function Start() {
 	// Init
 	gamePanel = new GamePanel(x, y, gamePanelBackground, xScoreDigits, oScoreDigits, xTurnLable, oTurnLable);
 	
-	// GAME VARIABLES
+	// GAME
 	// Init
-	game = new Game();
+	game = new Game(winnerLables);
 	if (boardSize < 5) {
 		game.SetFieldsForWin(3);
 	}
@@ -78,10 +80,23 @@ function Start() {
 function OnGUI() {
 	GUI.skin = myGUISkin;
 	GUI.DrawTexture(Rect(0, 0, Screen.width, Screen.height), backGround);
-	gamePanel.Draw(game);
-	//board.DrawAndHumanTurn(game);
-	board.Draw(game);
 	
+	gamePanel.Draw(game);
+	board.Draw(game);
+	if (game.winner == -1) {
+		if (game.CurrentTurn() == -1) {
+			if (board.HumanTurn(game)) {
+				board.Update(game);
+			}
+		}
+		else if (game.CurrentTurn() == 1){
+			board.AITurn(game);
+			board.Update(game);
+		}
+	}
+	else {
+		game.AnounceResults(board);
+	}
 }
 
 function Update () {
