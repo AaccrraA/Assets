@@ -22,25 +22,25 @@
 	function Open(game : Game, board : Board) {
 		GUI.Label(Rect(X, Y, backGround.width, backGround.height), backGround);
 		for (var i = 0; i < choices.Length; i++) {
-			if (i!=0 && GUI.Button(Rect(choices_X, choices_Y+(i-1)*choices[0].height, choices[0].width, choices[0].height), choices[i-1])) {
+			if (i!=0 && GUI.Button(Rect(choices_X, choices_Y+(i-1)*choices[0].height, choices[0].width, choices[0].height), choices[i])) {
 				switch(i) { // 0 - resume
 					case 1:
-						Debug.Log("Your choice - 0");
+						//Debug.Log("Your choice - 0");
 						game.SetPaused(false);
 						game.StartNewGame();
 						board.Reset();
 						break;
 					case 2:
-						Debug.Log("Your choice - 1");
+						//Debug.Log("Your choice - 1");
 						break;
 					case 3:
-						Debug.Log("Your choice - 2");
+						//Debug.Log("Your choice - 2");
 						Application.Quit();
 						break;
 				}
 			}
 			else if (game.IsGameStarted()) {
-				if (GUI.Button(Rect(choices_X, choices_Y-choices[0].height, choices[0].width, choices[0].height), choices[3])) {
+				if (GUI.Button(Rect(choices_X, choices_Y-choices[0].height, choices[0].width, choices[0].height), choices[0])) {
 					game.SetPaused(!game.IsPaused());
 				}
 			}

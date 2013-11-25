@@ -78,7 +78,7 @@ function Start() {
 	if (boardSize < 5) {
 		game.SetFieldsForWin(3);
 	}
-	else if (boardSize == 5) {
+	else if (boardSize < 7) {
 		game.SetFieldsForWin(4);
 	}
 	else {
