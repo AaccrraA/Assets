@@ -75,6 +75,7 @@
 	
 	function SetPaused(p : boolean) {
 		paused = p;
+		Debug.Log("Game Set Pause to = "+paused);
 	}
 	
 	function IsGameStarted() {

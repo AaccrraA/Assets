@@ -41,8 +41,6 @@ var winnerLables : Texture2D[];
 var menu : Menu;
 // MenuBackGround For Unity Inspector
 var menuBackGround : Texture2D;
-// Menu Choices
-var menuChoices : Texture2D[];
 
 //////////////
 //START INIT//
@@ -78,7 +76,7 @@ function Start() {
 	if (boardSize < 5) {
 		game.SetFieldsForWin(3);
 	}
-	else if (boardSize == 5) {
+	else if (boardSize < 7) {
 		game.SetFieldsForWin(4);
 	}
 	else {
@@ -86,7 +84,7 @@ function Start() {
 	}
 	
 	// MENU
-	menu = new Menu(menuBackGround, menuChoices);
+	menu = new Menu(menuBackGround);
 }
 
 ///////////
@@ -95,21 +93,24 @@ function Start() {
 function OnGUI() {
 	GUI.skin = myGUISkin;
 	GUI.DrawTexture(Rect(0, 0, Screen.width, Screen.height), backGround);
-
+	
+	gamePanel.Draw(game);
+	board.Draw(game);
+	
+	if (Input.GetKeyDown(KeyCode.Escape)) {
+		game.SetPaused(!game.IsPaused());
+	}
+	
 	if (game.IsPaused() == true) {
 		menu.Open(game, board);
 	}
 	else {
 		GameCycle();
-		if (Input.GetKeyUp(KeyCode.Escape)) {
-			game.SetPaused(!game.IsPaused());
-		}
 	}
 }
 
 function GameCycle () {
-	gamePanel.Draw(game);
-	board.Draw(game);
+	
 	if (game.GetWinner() == -1) {
 		if (game.CurrentTurn() == -1) {
 			if (board.HumanTurn(game)) {
