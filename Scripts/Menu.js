@@ -15,12 +15,11 @@
 	
 	var menuChoices=["Resume",
 					"New Game",
-					"Options",
 					"Quit"];
 	
 	function Menu(bckGrnd : Texture2D) {
 		width = 400;
-		height = 500;
+		height = 264;
 		
 		X = Screen.width/2 - width/2;
 		Y = Screen.height/2 - height/2;
@@ -30,7 +29,7 @@
 		choiceWidth = width;
 		choiceHeight = 66;
 		choice_X = X + 0;
-		choice_Y = Y + choiceHeight*2;
+		choice_Y = Y + choiceHeight;
 		
 	}
 	
@@ -41,6 +40,7 @@
 			switch(i) {
 				case 0: // Resumre
 					if (game.IsGameStarted() && GUI.Button(Rect(choice_X, choice_Y+i*choiceHeight, choiceWidth, choiceHeight), menuChoices[i])) {
+						game.SetPaused(false);
 					}
 					break;
 				case 1: // New Game
@@ -51,12 +51,7 @@
 						board.Reset();
 					}
 					break;
-				case 2: // Options
-					if (GUI.Button(Rect(choice_X, choice_Y+i*choiceHeight, choiceWidth, choiceHeight), menuChoices[i])) {
-					}
-					//Debug.Log("Your choice - 1");
-					break;
-				case 3: // Quit
+				case 2: // Quit
 					if (GUI.Button(Rect(choice_X, choice_Y+i*choiceHeight, choiceWidth, choiceHeight), menuChoices[i])) {
 						//Debug.Log("Your choice - 2");
 						Application.Quit();

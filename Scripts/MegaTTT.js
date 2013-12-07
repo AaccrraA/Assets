@@ -97,7 +97,7 @@ function OnGUI() {
 	gamePanel.Draw(game);
 	board.Draw(game);
 	
-	if (Input.GetKeyDown(KeyCode.Escape)) {
+	if (Event.current.Equals (Event.KeyboardEvent("escape"))) {
 		game.SetPaused(!game.IsPaused());
 	}
 	
