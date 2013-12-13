@@ -13,10 +13,6 @@
 		isNearBy = false;
 	}
 	
-	function GetWeight() {
-		return weight;
-	}
-	
 	function Reset() {
 		state = 0;
 		weight = -1;

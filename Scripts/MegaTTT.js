@@ -38,7 +38,7 @@ var winnerLables : Texture2D[];
 ////////
 //MENU//
 ////////
-var menu : Menu;
+private var menu : Menu;
 // MenuBackGround For Unity Inspector
 var menuBackGround : Texture2D;
 
@@ -95,7 +95,7 @@ function OnGUI() {
 	GUI.DrawTexture(Rect(0, 0, Screen.width, Screen.height), backGround);
 	
 	gamePanel.Draw(game);
-	board.Draw(game);
+	board.Draw();
 	
 	if (Event.current.Equals (Event.KeyboardEvent("escape"))) {
 		game.SetPaused(!game.IsPaused());
@@ -110,7 +110,6 @@ function OnGUI() {
 }
 
 function GameCycle () {
-	
 	if (game.GetWinner() == -1) {
 		if (game.CurrentTurn() == -1) {
 			if (board.HumanTurn(game)) {

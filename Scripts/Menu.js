@@ -1,19 +1,19 @@
 ﻿class Menu {
 	// Menu Window
-	var X : int;
-	var Y : int;
-	var width : int;
-	var height : int;
-	var backGround : Texture2D;
+	private var X : int;
+	private var Y : int;
+	private var width : int;
+	private var height : int;
+	private var backGround : Texture2D;
 	
 	// Choices
-	var choice_X : int;
-	var choice_Y : int;
+	private var choice_X : int;
+	private var choice_Y : int;
 	
-	var choiceWidth : int;
-	var choiceHeight : int;
+	private var choiceWidth : int;
+	private var choiceHeight : int;
 	
-	var menuChoices=["Resume",
+	private var menuChoices=["Resume",
 					"New Game",
 					"Quit"];
 	

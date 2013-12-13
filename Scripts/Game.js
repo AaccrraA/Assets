@@ -38,7 +38,7 @@
 		turn = turn * (-1);
 	}
 	
-	function CurrentTurn() {
+	function CurrentTurn() : int {
 		return turn;
 	}
 	
@@ -46,7 +46,7 @@
 		fieldsForWin = fldsFrWn;
 	}
 	
-	function FieldsForWin() {
+	function FieldsForWin() : int {
 		return fieldsForWin;
 	}
 	
@@ -65,11 +65,11 @@
 		winner = w;
 	}
 	
-	function GetWinner() {
+	function GetWinner() : int {
 		return winner;
 	}
 	
-	function IsPaused() {
+	function IsPaused() : boolean {
 		return paused;
 	}
 	
@@ -78,7 +78,7 @@
 		Debug.Log("Game Set Pause to = "+paused);
 	}
 	
-	function IsGameStarted() {
+	function IsGameStarted() : boolean {
 		return gameStarted;
 	}
 	

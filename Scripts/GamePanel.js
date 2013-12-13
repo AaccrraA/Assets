@@ -1,18 +1,18 @@
 ﻿class GamePanel {
 	// Position  in Unity GUI
-	var X : int;
-	var Y : int;
+	private var X : int;
+	private var Y : int;
 	
 	// Background
-	var backGround : Texture2D;
+	private var backGround : Texture2D;
 	
 	// Score Labels
-	var xScoreDigits : Texture2D[];
-	var oScoreDigits : Texture2D[];
+	private var xScoreDigits : Texture2D[];
+	private var oScoreDigits : Texture2D[];
 	
 	// Turn Labels
-	var xTurnLable : Texture2D[];
-	var oTurnLable : Texture2D[];
+	private var xTurnLable : Texture2D[];
+	private var oTurnLable : Texture2D[];
 	
 	// Score Offsets
 	private var xScoreOffset_X : int;
@@ -21,7 +21,7 @@
 	private var oScoreOffset_Y : int;
 	
 	// Score Spacing
-	var scoreSpacing : int;
+	private var scoreSpacing : int;
 	
 	// Turn Offsets
 	private var xTurnOffset_X : int;

@@ -1,10 +1,10 @@
 ﻿class Board {
-	var X : int;
-	var Y : int;
-	var size;
-	var field;
-	var boardLables : Texture2D[];
-	var lastField : Field;
+	private var X : int;
+	private var Y : int;
+	private var size : int;
+	private var field;
+	private var boardLables : Texture2D[];
+	private var lastField : Field;
 	
 	function Board(x : int, y : int, s : int, brdLbls : Texture2D[]) {
 		X = x;
@@ -21,7 +21,7 @@
 		lastField = field[0][0];
 	}
 	
-	function Draw(game : Game) {
+	function Draw() {
 		for (var i = 0; i < size; i++) {
 			for (var j = 0; j < size; j++) {
 				GUI.Label(Rect(X+j*boardLables[0].width, Y+i*boardLables[0].height, boardLables[0].width, boardLables[0].height), boardLables[field[i][j].state+1]);
@@ -29,7 +29,7 @@
 		}
 	}
 	
-	function HumanTurn(game : Game) {
+	function HumanTurn(game : Game) : boolean {
 		var isMadeTurn = false;
 		for (var i = 0; i < size; i++) {
 			for (var j = 0; j < size; j++) {
@@ -47,7 +47,7 @@
 		return isMadeTurn;
 	}
 	
-	function Update(game : Game) {
+	function Update(game : Game) : boolean {
 		if (game.GetWinner() == -1) {
 			var isEnd = false;
 			var f = lastField;
@@ -262,7 +262,7 @@
 		}
 	}
 
-	function DefineNearByFields() {
+	function DefineNearByFields() : int{
 		var nearByCount = 0;
 		for (var i = 0; i < size; i++) {
 			for (var j = 0; j < size; j++) {
@@ -304,7 +304,7 @@
 		f.weight = weightForO+weightForX;
 	}
 	
-	function HorCalcWeight(p : int, f : Field, game : Game) {
+	function HorCalcWeight(p : int, f : Field, game : Game) : int {
 		var weightOfField = 0;
 		var weightOfSequence = 0;
 		// Horizontal
@@ -343,7 +343,7 @@
 		return weightOfField;
 	}
 	
-	function VerCalcWeight(p : int, f : Field, game : Game) {
+	function VerCalcWeight(p : int, f : Field, game : Game) : int {
 		var weightOfField = 0;
 		var weightOfSequence = 0;
 		
@@ -383,7 +383,7 @@
 		return weightOfField;
 	}
 	
-	function LDiagCalcWeight(p : int, f : Field, game : Game) {
+	function LDiagCalcWeight(p : int, f : Field, game : Game) : int {
 		var weightOfField = 0;
 		var weightOfSequence = 0;
 		
@@ -423,7 +423,7 @@
 		return weightOfField;
 	}
 	
-	function RDiagCalcWeight(p : int, f : Field, game : Game) {
+	function RDiagCalcWeight(p : int, f : Field, game : Game) : int {
 		var weightOfField = 0;
 		var weightOfSequence = 0;
 		
